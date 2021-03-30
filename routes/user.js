@@ -53,7 +53,11 @@ userRouter.post("/login", (req, res) => {
     password,
   })
     .then((user) => {
-      res.status(200).json(user);
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        throw new Error("Wrong Username or password");
+      }
     })
     .catch((err) => {
       res.status(400).json({

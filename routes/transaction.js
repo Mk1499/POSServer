@@ -83,13 +83,13 @@ transRouter.post("/topup", (req, res) => {
       _id: walletID,
     })
       .then((walletData) => {
-        if (walletData.frozenBalance < amount) {
-          throw "Out of Balance";
-        } else {
+        if (walletData.frozenBalance >= amount) {
           return Wallet.updateOne(
             { _id: walletID },
             { $inc: { frozenBalance: -1 * amount } }
           );
+        } else {
+          throw "Out of Balance";
         }
       })
       .then(() => {
@@ -142,13 +142,13 @@ transRouter.post("/orangeCash", (req, res) => {
         amount,
         walletData.orangeCacheBalance < amount
       );
-      if (walletData.orangeCacheBalance < amount) {
-        throw new Error("Out of Balance");
-      } else {
+      if (walletData.orangeCacheBalance >= amount) {
         return Wallet.updateOne(
           { _id: walletID },
           { $inc: { orangeCacheBalance: -1 * amount } }
         );
+      } else {
+        throw new Error("Out of Balance");
       }
     })
     .then(() => {
